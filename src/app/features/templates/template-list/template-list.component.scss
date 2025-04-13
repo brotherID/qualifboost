@@ -1,0 +1,62 @@
+.search-card {
+  margin-bottom: 24px;
+  background-color: white;
+}
+
+.templates-list {
+  overflow: auto;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.template-title {
+  font-weight: 500;
+  color: #1565c0;
+}
+
+.skill-count {
+  mat-chip-set {
+    .mat-mdc-chip {
+      background-color: rgba(33, 150, 243, 0.1);
+      color: #1976d2;
+    }
+  }
+}
+
+.creator-info {
+  font-weight: 500;
+}
+
+.created-date {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: rgba(0, 0, 0, 0.5);
+  
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+  }
+  
+  p {
+    font-size: 16px;
+  }
+}
+
+.empty-table {
+  text-align: center;
+}
+
+.text-warn {
+  color: #f44336;
+}

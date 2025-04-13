@@ -1,0 +1,324 @@
+.candidate-details {
+  margin-top: 16px;
+}
+
+.loading-container {
+  margin: 32px 0;
+}
+
+.main-info-card {
+  margin-bottom: 24px;
+}
+
+.candidate-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 16px;
+  
+  .candidate-avatar {
+    .avatar-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #1976d2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      
+      .avatar-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+      }
+    }
+  }
+  
+  .candidate-primary-info {
+    flex: 1;
+    
+    .candidate-name {
+      margin: 0 0 4px 0;
+      font-size: 28px;
+      font-weight: 500;
+      color: #1565c0;
+    }
+    
+    .candidate-title {
+      font-size: 16px;
+      color: rgba(0, 0, 0, 0.7);
+      margin-bottom: 12px;
+    }
+  }
+}
+
+.candidate-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 16px;
+  
+  .detail-item {
+    .detail-label {
+      color: rgba(0, 0, 0, 0.6);
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    
+    .detail-value {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      
+      .detail-icon {
+        color: #1976d2;
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+}
+
+.my-3 {
+  margin: 24px 0;
+}
+
+.details-tabs {
+  margin-top: 16px;
+  
+  .tab-content {
+    padding: 24px 0;
+  }
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #1565c0;
+  margin: 0 0 24px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid rgba(25, 118, 210, 0.1);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  color: rgba(0, 0, 0, 0.5);
+  
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+  
+  p {
+    font-size: 16px;
+    text-align: center;
+    margin: 0;
+  }
+}
+
+/* Styles pour les compétences */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  
+  .skill-item {
+    .skill-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      
+      .skill-name {
+        font-weight: 500;
+      }
+      
+      .skill-level {
+        font-size: 12px;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+/* Styles pour les évaluations */
+.evaluations-list {
+  .evaluation-item {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    
+    .evaluation-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 16px;
+      
+      .evaluation-date {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-weight: 500;
+        color: #1976d2;
+      }
+      
+      .evaluation-template,
+      .evaluation-by {
+        color: rgba(0, 0, 0, 0.6);
+        font-size: 14px;
+      }
+    }
+    
+    .evaluation-assessment {
+      margin-bottom: 16px;
+      
+      strong {
+        display: block;
+        margin-bottom: 4px;
+        font-weight: 500;
+      }
+      
+      p {
+        margin: 0;
+        white-space: pre-line;
+      }
+    }
+    
+    .evaluation-comments {
+      margin-bottom: 16px;
+      background-color: rgba(255, 235, 59, 0.1);
+      padding: 12px;
+      border-radius: 4px;
+      
+      strong {
+        display: block;
+        margin-bottom: 4px;
+        font-weight: 500;
+      }
+      
+      p {
+        margin: 0;
+        white-space: pre-line;
+      }
+    }
+    
+    .evaluation-skills {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 16px;
+      
+      .skill-evaluation {
+        .skill-eval-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 4px;
+          
+          .skill-eval-name {
+            font-weight: 500;
+          }
+          
+          .skill-eval-score {
+            font-size: 14px;
+            font-weight: 500;
+            padding: 2px 8px;
+            border-radius: 12px;
+          }
+        }
+        
+        .skill-eval-comment {
+          font-size: 13px;
+          color: rgba(0, 0, 0, 0.7);
+          font-style: italic;
+          margin-top: 4px;
+        }
+      }
+    }
+  }
+}
+
+/* Classes pour les niveaux de compétence */
+.skill-high {
+  background-color: rgba(76, 175, 80, 0.12);
+  color: #2e7d32;
+  border: 1px solid rgba(76, 175, 80, 0.24);
+}
+
+.skill-medium {
+  background-color: rgba(255, 152, 0, 0.12);
+  color: #e65100;
+  border: 1px solid rgba(255, 152, 0, 0.24);
+}
+
+.skill-low {
+  background-color: rgba(244, 67, 54, 0.12);
+  color: #d32f2f;
+  border: 1px solid rgba(244, 67, 54, 0.24);
+}
+
+/* Classes pour les statuts */
+.status-ok {
+  background-color: rgba(76, 175, 80, 0.12);
+  color: #2e7d32;
+  border: 1px solid rgba(76, 175, 80, 0.24);
+}
+
+.status-ko {
+  background-color: rgba(244, 67, 54, 0.12);
+  color: #d32f2f;
+  border: 1px solid rgba(244, 67, 54, 0.24);
+}
+
+/* Responsivité */
+@media (max-width: 768px) {
+  .candidate-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    
+    .candidate-primary-info {
+      width: 100%;
+    }
+  }
+  
+  .candidate-details-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .skills-grid,
+  .evaluation-skills {
+    grid-template-columns: 1fr;
+  }
+  
+  .header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}

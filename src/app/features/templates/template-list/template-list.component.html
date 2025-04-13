@@ -1,0 +1,98 @@
+<div class="container">
+  <div class="page-header">
+    <h2>
+      <mat-icon>library_books</mat-icon>
+      Templates d'u00e9valuation
+    </h2>
+    <button mat-raised-button color="primary" (click)="createTemplate()">
+      <mat-icon>add</mat-icon>
+      Nouveau template
+    </button>
+  </div>
+
+  <mat-card class="card-container search-card">
+    <mat-form-field appearance="outline">
+      <mat-label>Rechercher un template</mat-label>
+      <input matInput [(ngModel)]="searchText" (keyup)="applyFilter()" placeholder="Saisir un titre...">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </mat-card>
+
+  <mat-card class="card-container templates-list fade-in">
+    <table mat-table [dataSource]="filteredTemplates" class="mat-elevation-z0 w-100">
+      
+      <!-- Titre du template -->
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef>Template</th>
+        <td mat-cell *matCellDef="let template">
+          <div class="template-title">{{ template.title }}</div>
+        </td>
+      </ng-container>
+
+      <!-- Nombre de compu00e9tences -->
+      <ng-container matColumnDef="skillCount">
+        <th mat-header-cell *matHeaderCellDef>Compu00e9tences</th>
+        <td mat-cell *matCellDef="let template">
+          <div class="skill-count">
+            <mat-chip-set>
+              <mat-chip>{{ template.skills.length }} compu00e9tence(s)</mat-chip>
+            </mat-chip-set>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Cru00e9u00e9 par -->
+      <ng-container matColumnDef="createdBy">
+        <th mat-header-cell *matHeaderCellDef>Cru00e9u00e9 par</th>
+        <td mat-cell *matCellDef="let template">
+          <div class="creator-info">{{ template.createdBy }}</div>
+        </td>
+      </ng-container>
+
+      <!-- Date de cru00e9ation -->
+      <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef>Date de cru00e9ation</th>
+        <td mat-cell *matCellDef="let template">
+          <div class="created-date">{{ template.createdAt | date:'dd/MM/yyyy' }}</div>
+        </td>
+      </ng-container>
+
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let template">
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions pour ce template">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="viewTemplate(template.id)">
+              <mat-icon>visibility</mat-icon>
+              <span>Voir le du00e9tail</span>
+            </button>
+            <button mat-menu-item (click)="editTemplate(template.id)">
+              <mat-icon>edit</mat-icon>
+              <span>Modifier</span>
+            </button>
+            <button mat-menu-item (click)="deleteTemplate(template.id)">
+              <mat-icon color="warn">delete</mat-icon>
+              <span class="text-warn">Supprimer</span>
+            </button>
+          </mat-menu>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      <!-- Ligne affichu00e9e lorsqu'il n'y a pas de donnu00e9es correspondantes -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell empty-table" [attr.colspan]="displayedColumns.length">
+          <div class="no-data">
+            <mat-icon>search_off</mat-icon>
+            <p>Aucun template trouvu00e9</p>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </mat-card>
+</div>

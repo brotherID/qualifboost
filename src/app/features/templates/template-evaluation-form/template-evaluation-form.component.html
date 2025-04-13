@@ -1,0 +1,247 @@
+<div class="container">
+  <div class="page-header">
+    <h2>
+      <mat-icon>assignment</mat-icon>
+      {{ isEditMode ? 'Modifier l'évaluation' : 'Nouvelle évaluation' }}
+    </h2>
+  </div>
+
+  <form [formGroup]="evaluationForm" (ngSubmit)="saveEvaluation()" class="fade-in">
+    <mat-card class="card-container">
+      <div class="form-section">
+        <h3 class="section-title">Informations générales</h3>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Candidat</mat-label>
+            <mat-select formControlName="candidateId" (selectionChange)="onCandidateChange()" [disabled]="!!candidateId">
+              <mat-option *ngFor="let candidate of candidates" [value]="candidate.id">
+                {{ candidate.firstName }} {{ candidate.lastName }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="evaluationForm.get('candidateId')?.hasError('required')">
+              Le candidat est obligatoire
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Template d'évaluation</mat-label>
+            <mat-select formControlName="templateId" (selectionChange)="onTemplateChange()">
+              <mat-option *ngFor="let template of templates" [value]="template.id">
+                {{ template.title }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="evaluationForm.get('templateId')?.hasError('required')">
+              Le template est obligatoire
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Date d'évaluation</mat-label>
+            <input matInput type="date" formControlName="evaluationDate">
+            <mat-error *ngIf="evaluationForm.get('evaluationDate')?.hasError('required')">
+              La date est obligatoire
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </mat-card>
+
+    <ng-container *ngIf="selectedTemplate">
+      <mat-card class="card-container skills-card">
+        <div class="form-section">
+          <h3 class="section-title">Évaluation des compétences</h3>
+          <p class="section-subtitle">Évaluez le niveau du candidat pour chaque compétence (1 = débutant, 5 = expert)</p>
+
+          <div formArrayName="skillEvaluations" class="skills-list">
+            <div *ngFor="let skillEval of skillEvaluations.controls; let i = index" [formGroupName]="i" class="skill-evaluation-item">
+              <mat-divider *ngIf="i > 0"></mat-divider>
+              
+              <div class="skill-header">
+                <h4 class="skill-name">
+                  <span class="skill-badge" [ngClass]="skillEval.get('skillType')?.value === 'technology' ? 'tech-badge' : 'subcat-badge'">
+                    {{ getSkillTypeLabel(skillEval.get('skillType')?.value) }}
+                  </span>
+                  {{ skillEval.get('skillName')?.value }}
+                </h4>
+                <div class="required-level" *ngIf="selectedTemplate && selectedTemplate.skills && selectedTemplate.skills[i] && selectedTemplate.skills[i].comment">
+                  Note: {{ selectedTemplate.skills[i].comment }}
+                </div>
+              </div>
+              
+              <div class="skill-content">
+                <div class="score-section">
+                  <label>Score:</label>
+                  <div class="score-options">
+                    <ng-container *ngFor="let score of scoreOptions">
+                      <div class="score-option" 
+                           [class.selected]="skillEval.get('score')?.value === score"
+                           (click)="skillEval.get('score')?.setValue(score)">
+                        {{ score }}
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+
+                <!-- Technologies pour les sous-catégories -->
+                <div class="technologies-section" *ngIf="skillEval.get('skillType')?.value === 'subcategory'">
+                  <h5 class="technologies-title">Technologies évaluées:</h5>
+                  
+                  <!-- Technologies sélectionnées -->
+                  <div class="selected-technologies" *ngIf="getSelectedTechnologies(i).length > 0">
+                    <h6>Technologies sélectionnées:</h6>
+                    <div class="technology-chips">
+                      <div class="technology-chip" *ngFor="let techControl of getSelectedTechnologies(i).controls; let techIndex = index">
+                        <span [class.new-tech]="techControl.get('isNew')?.value">{{ techControl.get('name')?.value }}</span>
+                        <button type="button" class="remove-tech-btn" (click)="removeTechnology(i, techIndex)">
+                          <mat-icon>close</mat-icon>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Ajouter de nouvelles technologies -->
+                  <div class="add-technology-section">
+                    <h6>Ajouter des technologies:</h6>
+                    <div class="add-technology-form">
+                      <mat-form-field appearance="outline" class="new-tech-input">
+                        <mat-label>Nouvelle technologie</mat-label>
+                        <input matInput [(ngModel)]="newTechnologyName" [ngModelOptions]="{standalone: true}" placeholder="Entrez le nom">
+                      </mat-form-field>
+                      <button type="button" mat-stroked-button color="primary" 
+                              [disabled]="!newTechnologyName.trim()"
+                              (click)="addNewTechnology(i, skillEval.get('skillType')?.value === 'subcategory' ? skillEval.get('skillId')?.value || 0 : 0, newTechnologyName)">
+                        <mat-icon>add</mat-icon> Ajouter
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <!-- Technologies disponibles dans cette sous-catégorie -->
+                  <div class="available-technologies" *ngIf="skillEval.get('skillType')?.value === 'subcategory' && hasTechnologiesForSubcategory(i)">
+                    <h6>Technologies disponibles:</h6>
+                    <div class="technology-checkbox-list">
+                      <div class="technology-checkbox-item" *ngFor="let tech of getTechnologiesForSubcategory(i)">
+                        <mat-checkbox 
+                          [checked]="isTechnologySelected(i, tech.id)"
+                          (change)="toggleTechnology(i, tech)">
+                          {{ tech.name }}
+                        </mat-checkbox>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Commentaire (optionnel)</mat-label>
+                  <textarea matInput formControlName="comment" rows="2" placeholder="Observations spécifiques sur cette compétence..."></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+
+      <mat-card class="card-container">
+        <div class="form-section">
+          <h3 class="section-title">Ajouter d'autres compétences</h3>
+          <p class="section-subtitle">Ajoutez manuellement des compétences supplémentaires à évaluer</p>
+          
+          <div class="manual-skill-form">
+            <!-- Type de compétence à ajouter -->
+            <div class="form-row skill-type-selector">
+              <div class="skill-type-options">
+                <button type="button" mat-button [class.selected]="manualSkillType === 'technology'" (click)="manualSkillType = 'technology'">Technologie</button>
+                <button type="button" mat-button [class.selected]="manualSkillType === 'subcategory'" (click)="manualSkillType = 'subcategory'">Sous-catégorie</button>
+              </div>
+            </div>
+            
+            <!-- Sélection de la catégorie -->
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Catégorie</mat-label>
+                <mat-select [(ngModel)]="selectedCategory" [ngModelOptions]="{standalone: true}" (selectionChange)="onCategoryChange()">
+                  <mat-option [value]="null">-- Sélectionner une catégorie --</mat-option>
+                  <mat-option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            
+            <!-- Sélection de sous-catégorie -->
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ manualSkillType === 'subcategory' ? 'Sous-catégorie à évaluer' : 'Sous-catégorie' }}</mat-label>
+                <mat-select [(ngModel)]="selectedSubcategory" [ngModelOptions]="{standalone: true}" 
+                            (selectionChange)="onSubcategoryChange()" 
+                            [disabled]="!selectedCategory || subcategoriesOfSelectedCategory.length === 0">
+                  <mat-option [value]="null">-- Sélectionner une sous-catégorie --</mat-option>
+                  <mat-option *ngFor="let subcategory of subcategoriesOfSelectedCategory" [value]="subcategory.id">
+                    {{ subcategory.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            
+            <!-- Sélection de technologie (si type=technology) -->
+            <div class="form-row" *ngIf="manualSkillType === 'technology'">
+              <mat-form-field appearance="outline">
+                <mat-label>Technologie existante (optionnel)</mat-label>
+                <mat-select [(ngModel)]="selectedTechnology" [ngModelOptions]="{standalone: true}" 
+                            [disabled]="!selectedSubcategory || technologiesOfSelectedSubcategory.length === 0">
+                  <mat-option [value]="null">-- Sélectionner ou ajouter nouveau --</mat-option>
+                  <mat-option *ngFor="let technology of technologiesOfSelectedSubcategory" [value]="technology.id">
+                    {{ technology.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            
+            <!-- Ajout d'une nouvelle technologie (si type=technology et aucune technologie existante sélectionnée) -->
+            <div class="form-row" *ngIf="manualSkillType === 'technology' && !selectedTechnology">
+              <mat-form-field appearance="outline">
+                <mat-label>Nouvelle technologie (optionnel)</mat-label>
+                <input matInput [(ngModel)]="newManualTechnologyName" [ngModelOptions]="{standalone: true}" 
+                       placeholder="Nom de la nouvelle technologie">
+              </mat-form-field>
+            </div>
+            
+            <!-- Bouton d'ajout -->
+            <div class="form-row">
+              <button type="button" mat-raised-button color="primary" (click)="addManualSkill()"
+                      [disabled]="(manualSkillType === 'subcategory' && !selectedSubcategory) || 
+                                  (manualSkillType === 'technology' && !selectedSubcategory) || 
+                                  (manualSkillType === 'technology' && !selectedTechnology && !newManualTechnologyName.trim())">
+                <mat-icon>add</mat-icon> Ajouter la compétence
+              </button>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+
+      <mat-card class="card-container">
+        <div class="form-section">
+          <h3 class="section-title">Appréciation générale</h3>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Appréciation générale</mat-label>
+            <textarea matInput formControlName="overallAssessment" rows="3" placeholder="Synthèse globale de l'évaluation du candidat..."></textarea>
+            <mat-error *ngIf="evaluationForm.get('overallAssessment')?.hasError('required')">
+              L'appréciation générale est obligatoire
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Remarques/observations globales (optionnel)</mat-label>
+            <textarea matInput formControlName="generalComments" rows="3" placeholder="Autres observations, disponibilité, attentes salariales..."></textarea>
+          </mat-form-field>
+        </div>
+      </mat-card>
+    </ng-container>
+
+    <div class="actions">
+      <button type="button" mat-button (click)="cancel()">Annuler</button>
+      <button type="submit" mat-raised-button color="primary" [disabled]="evaluationForm.invalid">
+        {{ isEditMode ? 'Mettre à jour' : 'Enregistrer' }}
+      </button>
+    </div>
+  </form>
+</div>

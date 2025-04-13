@@ -1,0 +1,259 @@
+<div class="technology-management-container">
+  <h1 class="page-title">Gestion des Technologies</h1>
+  <div class="access-warning" *ngIf="!isRT">
+    <mat-card class="warning-card">
+      <mat-card-content>
+        <mat-icon class="warning-icon">warning</mat-icon>
+        <p>Cette section est réservée aux Responsables Techniques (RT).</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="management-content" *ngIf="isRT">
+    <!-- Navigation par boutons au lieu de mat-tabs -->
+    <div class="tab-navigation">
+      <button mat-raised-button 
+              [class.active-tab]="activeTab === 'categories'" 
+              (click)="activeTab = 'categories'">
+        Catégories
+      </button>
+      <button mat-raised-button 
+              [class.active-tab]="activeTab === 'subcategories'" 
+              (click)="activeTab = 'subcategories'">
+        Sous-catégories
+      </button>
+      <button mat-raised-button 
+              [class.active-tab]="activeTab === 'technologies'" 
+              (click)="activeTab = 'technologies'">
+        Technologies
+      </button>
+    </div>
+
+    <!-- Contenu des onglets -->
+    <div class="tab-container">
+      <!-- Onglet Catégories -->
+      <div class="tab-content" *ngIf="activeTab === 'categories'">
+        <div class="main-action-panel">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Ajouter une catégorie</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Nom de la catégorie</mat-label>
+                <input matInput [(ngModel)]="newCategoryName" placeholder="Ex: Langages de programmation">
+              </mat-form-field>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-raised-button color="primary" (click)="addCategory()" [disabled]="!newCategoryName.trim()">
+                <mat-icon>add</mat-icon> Ajouter
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+
+        <div class="data-table-container">
+          <table mat-table [dataSource]="categories" class="mat-elevation-z8 full-width">
+            <!-- ID Column -->
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef>ID</th>
+              <td mat-cell *matCellDef="let category">{{ category.id }}</td>
+            </ng-container>
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Nom</th>
+              <td mat-cell *matCellDef="let category">{{ category.name }}</td>
+            </ng-container>
+
+            <!-- Subcategories Count Column -->
+            <ng-container matColumnDef="subcategories">
+              <th mat-header-cell *matHeaderCellDef>Sous-catégories</th>
+              <td mat-cell *matCellDef="let category">{{ category.subcategories.length }}</td>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let category">
+                <button mat-icon-button color="accent" (click)="selectCategory(category)">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteCategory(category, $event)"
+                        [disabled]="category.subcategories.length > 0">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="categoryColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: categoryColumns;"
+                [class.selected-row]="selectedCategory && selectedCategory.id === row.id"
+                (click)="selectCategory(row)"></tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Onglet Sous-catégories -->
+      <div class="tab-content" *ngIf="activeTab === 'subcategories'">
+        <div class="main-action-panel">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Ajouter une sous-catégorie</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Catégorie</mat-label>
+                <mat-select [(value)]="selectedCategory">
+                  <mat-option *ngFor="let category of categories" [value]="category">
+                    {{ category.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Nom de la sous-catégorie</mat-label>
+                <input matInput [(ngModel)]="newSubcategoryName" placeholder="Ex: Orienté objet" 
+                       [disabled]="!selectedCategory">
+              </mat-form-field>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-raised-button color="primary" (click)="addSubcategory()" 
+                      [disabled]="!selectedCategory || !newSubcategoryName.trim()">
+                <mat-icon>add</mat-icon> Ajouter
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+
+        <div class="subcategory-section" *ngIf="selectedCategory">
+          <h3>Sous-catégories de {{ selectedCategory.name }}</h3>
+
+          <div class="data-table-container">
+            <table mat-table [dataSource]="selectedCategory.subcategories" class="mat-elevation-z8 full-width">
+              <!-- ID Column -->
+              <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef>ID</th>
+                <td mat-cell *matCellDef="let subcategory">{{ subcategory.id }}</td>
+              </ng-container>
+
+              <!-- Name Column -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Nom</th>
+                <td mat-cell *matCellDef="let subcategory">{{ subcategory.name }}</td>
+              </ng-container>
+
+              <!-- Technologies Count Column -->
+              <ng-container matColumnDef="technologies">
+                <th mat-header-cell *matHeaderCellDef>Technologies</th>
+                <td mat-cell *matCellDef="let subcategory">{{ subcategory.technologies.length }}</td>
+              </ng-container>
+
+              <!-- Actions Column -->
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let subcategory">
+                  <button mat-icon-button color="accent" (click)="selectSubcategory(subcategory)">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="deleteSubcategory(subcategory, $event)"
+                          [disabled]="subcategory.technologies.length > 0">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="subcategoryColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: subcategoryColumns;"
+                  [class.selected-row]="selectedSubcategory && selectedSubcategory.id === row.id"
+                  (click)="selectSubcategory(row)"></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="no-selection-message" *ngIf="!selectedCategory">
+          <p>Veuillez sélectionner une catégorie pour gérer ses sous-catégories.</p>
+        </div>
+      </div>
+
+      <!-- Onglet Technologies -->
+      <div class="tab-content" *ngIf="activeTab === 'technologies'">
+        <div class="main-action-panel">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Ajouter une technologie</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Catégorie</mat-label>
+                <mat-select [(value)]="selectedCategory">
+                  <mat-option *ngFor="let category of categories" [value]="category">
+                    {{ category.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Sous-catégorie</mat-label>
+                <mat-select [(value)]="selectedSubcategory" [disabled]="!selectedCategory">
+                  <mat-option *ngFor="let subcategory of selectedCategory?.subcategories" [value]="subcategory">
+                    {{ subcategory.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Nom de la technologie</mat-label>
+                <input matInput [(ngModel)]="newTechnologyName" placeholder="Ex: Java"
+                       [disabled]="!selectedSubcategory">
+              </mat-form-field>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-raised-button color="primary" (click)="addTechnology()"
+                      [disabled]="!selectedSubcategory || !newTechnologyName.trim()">
+                <mat-icon>add</mat-icon> Ajouter
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+
+        <div class="technology-section" *ngIf="selectedSubcategory">
+          <h3>Technologies de {{ selectedSubcategory.name }}</h3>
+
+          <div class="data-table-container">
+            <table mat-table [dataSource]="selectedSubcategory.technologies" class="mat-elevation-z8 full-width">
+              <!-- ID Column -->
+              <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef>ID</th>
+                <td mat-cell *matCellDef="let technology">{{ technology.id }}</td>
+              </ng-container>
+
+              <!-- Name Column -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Nom</th>
+                <td mat-cell *matCellDef="let technology">{{ technology.name }}</td>
+              </ng-container>
+
+              <!-- Actions Column -->
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let technology">
+                  <button mat-icon-button color="warn" (click)="deleteTechnology(technology, $event)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="technologyColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: technologyColumns;"></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="no-selection-message" *ngIf="!selectedSubcategory">
+          <p>Veuillez sélectionner une sous-catégorie pour gérer ses technologies.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

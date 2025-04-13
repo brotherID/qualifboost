@@ -1,0 +1,102 @@
+<div class="container">
+  <div class="page-header">
+    <h2>
+      <mat-icon>library_books</mat-icon>
+      {{ isEditMode ? 'Modifier le template' : isReadOnly ? 'Détails du template' : 'Nouveau template' }}
+    </h2>
+  </div>
+
+  <form [formGroup]="templateForm" (ngSubmit)="saveTemplate()" class="fade-in">
+    <mat-card class="card-container">
+      <mat-form-field appearance="outline">
+        <mat-label>Titre du template</mat-label>
+        <input matInput formControlName="title" placeholder="Ex: Template Java Back-end">
+        <mat-error *ngIf="templateForm.get('title')?.hasError('required')">
+          Le titre est obligatoire
+        </mat-error>
+        <mat-error *ngIf="templateForm.get('title')?.hasError('minlength')">
+          Le titre doit contenir au moins 3 caractères
+        </mat-error>
+      </mat-form-field>
+    </mat-card>
+
+    <mat-card class="card-container">
+      <div class="skills-section">
+        <div class="section-header">
+          <h3 class="section-title">Compétences</h3>
+          <button *ngIf="!isReadOnly" type="button" mat-raised-button color="primary" (click)="addSkill()">
+            <mat-icon>add</mat-icon>
+            Ajouter une compétence
+          </button>
+        </div>
+
+        <div formArrayName="skills" class="skills-list">
+          <div *ngFor="let skill of skills.controls; let i = index" [formGroupName]="i" class="skill-item">
+            <div class="skill-content">
+              <!-- Type de compétence: technologie ou sous-catégorie -->
+              <mat-form-field appearance="outline">
+                <mat-label>Type</mat-label>
+                <mat-select formControlName="type" (selectionChange)="onTypeChange(i)">
+                  <mat-option value="technology">Technologie</mat-option>
+                  <mat-option value="subcategory">Sous-catégorie</mat-option>
+                </mat-select>
+              </mat-form-field>
+              
+              <!-- Catégorie -->
+              <mat-form-field appearance="outline">
+                <mat-label>Catégorie</mat-label>
+                <mat-select formControlName="categoryId" (selectionChange)="onCategoryChange(i)">
+                  <mat-option *ngFor="let category of categories" [value]="category.id">
+                    {{ category.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <!-- Sous-catégorie ou Technologie (selon le type) -->
+              <mat-form-field appearance="outline">
+                <mat-label>{{ skill.get('type')?.value === 'subcategory' ? 'Sous-catégorie' : 'Technologie' }}</mat-label>
+                <mat-select formControlName="itemId">
+                  <ng-container *ngIf="skill.get('type')?.value === 'subcategory'">
+                    <mat-option *ngFor="let subcategory of subcategories" [value]="subcategory.id">
+                      {{ subcategory.name }}
+                    </mat-option>
+                  </ng-container>
+                  <ng-container *ngIf="skill.get('type')?.value === 'technology'">
+                    <mat-option *ngFor="let technology of technologies" [value]="technology.id">
+                      {{ technology.name }}
+                    </mat-option>
+                  </ng-container>
+                </mat-select>
+                <mat-error *ngIf="skill.get('itemId')?.hasError('required')">
+                  Ce champ est obligatoire
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Commentaire sur la compétence -->
+              <mat-form-field appearance="outline">
+                <mat-label>Commentaire (optionnel)</mat-label>
+                <input matInput formControlName="comment" placeholder="Ex: Niveau avancé requis">
+              </mat-form-field>
+
+              <!-- Bouton de suppression -->
+              <button *ngIf="!isReadOnly" type="button" mat-icon-button color="warn" 
+                      (click)="removeSkill(i)" matTooltip="Supprimer cette compétence">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+            <mat-divider *ngIf="i < skills.length - 1"></mat-divider>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+
+    <div class="actions">
+      <button type="button" mat-button (click)="cancel()">
+        {{ isReadOnly ? 'Retour' : 'Annuler' }}
+      </button>
+      <button *ngIf="!isReadOnly" type="submit" mat-raised-button color="primary" [disabled]="templateForm.invalid">
+        {{ isEditMode ? 'Mettre à jour' : 'Créer le template' }}
+      </button>
+    </div>
+  </form>
+</div>

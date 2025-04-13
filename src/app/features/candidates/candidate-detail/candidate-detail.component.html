@@ -1,0 +1,218 @@
+<div class="container">
+  <div class="page-header">
+    <h2>
+      <mat-icon>person</mat-icon>
+      Détail du candidat
+    </h2>
+    <div class="header-actions">
+      <button mat-stroked-button (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+        Retour
+      </button>
+      <button mat-raised-button color="primary" *ngIf="isRC" (click)="navigateToEdit()">
+        <mat-icon>edit</mat-icon>
+        Modifier
+      </button>
+      <button mat-raised-button color="accent" *ngIf="isRT" (click)="navigateToEvaluate()">
+        <mat-icon>assessment</mat-icon>
+        Évaluer
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+
+  <div *ngIf="!isLoading && candidate" class="candidate-details fade-in">
+    <!-- En-tête avec les informations clés -->
+    <mat-card class="card-container main-info-card">
+      <div class="candidate-header">
+        <div class="candidate-avatar">
+          <div class="avatar-circle">
+            <mat-icon class="avatar-icon">person</mat-icon>
+          </div>
+        </div>
+        <div class="candidate-primary-info">
+          <h2 class="candidate-name">{{ candidate.firstName }} {{ candidate.lastName }}</h2>
+          <div class="candidate-title">{{ candidate.title || 'Développeur' }}</div>
+          <div class="candidate-tech">
+            <mat-chip-set>
+              <mat-chip color="primary">{{ candidate.mainTechnology }}</mat-chip>
+              <mat-chip *ngIf="candidate.grade" color="accent">{{ candidate.grade }}</mat-chip>
+              <mat-chip [ngClass]="getStatusClass()">
+                {{ candidate.status }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </div>
+      </div>
+
+      <mat-divider class="my-3"></mat-divider>
+
+      <!-- Informations de contact et détails -->
+      <div class="candidate-details-grid">
+        <div class="detail-item">
+          <div class="detail-label">Email</div>
+          <div class="detail-value">
+            <mat-icon class="detail-icon">email</mat-icon>
+            {{ candidate.email || 'Non renseigné' }}
+          </div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Téléphone</div>
+          <div class="detail-value">
+            <mat-icon class="detail-icon">phone</mat-icon>
+            {{ candidate.phone || 'Non renseigné' }}
+          </div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Disponibilité</div>
+          <div class="detail-value">
+            <mat-icon class="detail-icon">event_available</mat-icon>
+            {{ candidate.availability || 'Immédiate' }}
+          </div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Expérience</div>
+          <div class="detail-value">
+            <mat-icon class="detail-icon">work</mat-icon>
+            {{ candidate.experience || '0' }} ans
+          </div>
+        </div>
+        <div class="detail-item" *ngIf="candidate.location">
+          <div class="detail-label">Localisation</div>
+          <div class="detail-value">
+            <mat-icon class="detail-icon">place</mat-icon>
+            {{ candidate.location }}
+          </div>
+        </div>
+        <div class="detail-item" *ngIf="candidate.salary">
+          <div class="detail-label">Prétention salariale</div>
+          <div class="detail-value">
+            <mat-icon class="detail-icon">euro</mat-icon>
+            {{ candidate.salary }} K€
+          </div>
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- Onglets pour afficher les différentes sections -->
+    <mat-tab-group class="details-tabs">
+      <!-- Onglet des compétences -->
+      <mat-tab label="Compétences">
+        <div class="tab-content">
+          <mat-card class="card-container">
+            <h3 class="section-title">Compétences techniques</h3>
+            
+            <div *ngIf="skills.length === 0" class="no-data">
+              <mat-icon>info</mat-icon>
+              <p>Aucune compétence évaluée pour ce candidat</p>
+            </div>
+            
+            <div *ngIf="skills.length > 0" class="skills-grid">
+              <div *ngFor="let skill of skills" class="skill-item">
+                <div class="skill-header">
+                  <div class="skill-name">{{ skill.name }}</div>
+                  <div class="skill-level" [ngClass]="getSkillLevelClass(skill.level)">
+                    {{ getSkillLevelLabel(skill.level) }}
+                  </div>
+                </div>
+                <mat-progress-bar 
+                  [value]="skill.level * 20" 
+                  [ngClass]="getSkillLevelClass(skill.level)">
+                </mat-progress-bar>
+              </div>
+            </div>
+          </mat-card>
+        </div>
+      </mat-tab>
+      
+      <!-- Onglet des évaluations -->
+      <mat-tab label="Évaluations">
+        <div class="tab-content">
+          <mat-card class="card-container">
+            <div class="section-header">
+              <h3 class="section-title">Historique des évaluations</h3>
+              <button mat-raised-button color="accent" *ngIf="isRT" (click)="navigateToEvaluate()">
+                <mat-icon>add</mat-icon>
+                Nouvelle évaluation
+              </button>
+            </div>
+            
+            <div *ngIf="candidateEvaluations.length === 0" class="no-data">
+              <mat-icon>info</mat-icon>
+              <p>Aucune évaluation enregistrée pour ce candidat</p>
+            </div>
+            
+            <div *ngIf="candidateEvaluations.length > 0" class="evaluations-list">
+              <div *ngFor="let evaluation of candidateEvaluations" class="evaluation-item">
+                <div class="evaluation-header">
+                  <div class="evaluation-date">
+                    <mat-icon>event</mat-icon>
+                    {{ evaluation.evaluationDate | date:'dd/MM/yyyy' }}
+                  </div>
+                  <div class="evaluation-template">Template: {{ evaluation.templateId }}</div>
+                  <div class="evaluation-by">Par: {{ evaluation.evaluatedBy }}</div>
+                </div>
+                
+                <div class="evaluation-assessment">
+                  <strong>Appréciation générale:</strong>
+                  <p>{{ evaluation.overallAssessment }}</p>
+                </div>
+                
+                <div *ngIf="evaluation.generalComments" class="evaluation-comments">
+                  <strong>Commentaires:</strong>
+                  <p>{{ evaluation.generalComments }}</p>
+                </div>
+                
+                <mat-divider class="my-3"></mat-divider>
+                
+                <div class="evaluation-skills">
+                  <div *ngFor="let skillEval of evaluation.skillEvaluations" class="skill-evaluation">
+                    <div class="skill-eval-header">
+                      <div class="skill-eval-name">{{ skillEval.skillName }}</div>
+                      <div class="skill-eval-score" [ngClass]="getSkillLevelClass(skillEval.score)">
+                        {{ skillEval.score }}/5
+                      </div>
+                    </div>
+                    <div *ngIf="skillEval.comment" class="skill-eval-comment">
+                      {{ skillEval.comment }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-card>
+        </div>
+      </mat-tab>
+      
+      <!-- Onglet des notes et documents -->
+      <mat-tab label="Notes & Documents">
+        <div class="tab-content">
+          <mat-card class="card-container">
+            <h3 class="section-title">Notes</h3>
+            
+            <div class="notes-section">
+              <div class="no-data">
+                <mat-icon>note_add</mat-icon>
+                <p>Aucune note pour ce candidat</p>
+              </div>
+            </div>
+            
+            <mat-divider class="my-3"></mat-divider>
+            
+            <h3 class="section-title">Documents</h3>
+            
+            <div class="documents-section">
+              <div class="no-data">
+                <mat-icon>upload_file</mat-icon>
+                <p>Aucun document pour ce candidat</p>
+              </div>
+            </div>
+          </mat-card>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>
