@@ -1,0 +1,27 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-title>Connexion</mat-card-title>
+
+    <mat-card-content>
+      <form (ngSubmit)="login()" #loginForm="ngForm">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nom d'utilisateur</mat-label>
+          <input matInput [(ngModel)]="username" name="username" placeholder="Nom d'utilisateur" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Mot de passe</mat-label>
+          <input matInput [(ngModel)]="password" name="password" placeholder="Mot de passe" type="password" required>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" class="full-width">
+          Se connecter
+        </button>
+
+        <div *ngIf="accessToken" class="success-msg">✅ Token reçu</div>
+        <div *ngIf="errorMessage" class="error-msg">❌ {{ errorMessage }}</div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+

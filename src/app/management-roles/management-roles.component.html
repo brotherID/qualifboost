@@ -1,0 +1,76 @@
+<div class="container">
+  <div class="page-header">
+    <h2>
+      <mat-icon>admin_panel_settings</mat-icon>
+      Gestion des Rôles
+    </h2>
+    <button mat-raised-button color="primary" routerLink="/roles/add" >
+      <mat-icon>add</mat-icon>
+      Nouveau Role
+    </button>
+  </div>
+
+  <div class="card-container">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z1">
+
+      <ng-container matColumnDef="role">
+        <th mat-header-cell *matHeaderCellDef>Nom du Rôle</th>
+        <td mat-cell *matCellDef="let role">
+          <strong>{{ role.role }}</strong>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="isAdmin">
+        <th mat-header-cell *matHeaderCellDef>Admin</th>
+        <td mat-cell *matCellDef="let role">
+          <span class="chip" [ngClass]="role.isAdmin ? 'success' : 'error'">
+            {{ role.isAdmin ? 'Oui' : 'Non' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="isSuperAdmin">
+        <th mat-header-cell *matHeaderCellDef>Super Admin</th>
+        <td mat-cell *matCellDef="let role">
+          <span class="chip" [ngClass]="role.isSuperAdmin ? 'success' : 'error'">
+            {{ role.isSuperAdmin ? 'Oui' : 'Non' }}
+          </span>
+        </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let role">
+          <button mat-icon-button color="primary" [routerLink]="['/roles/view/', role.id]"  matTooltip="Voir">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button mat-icon-button color="accent" (click)="editRole(role)" matTooltip="Modifier">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteRole(role)" matTooltip="Supprimer">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let role; columns: displayedColumns;"></tr>
+
+
+      <tr class="mat-row no-data-row" *ngIf="roles.length === 0">
+        <td class="mat-cell" colspan="5">
+          <mat-icon>search_off</mat-icon> Aucun rôle trouvé.
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+
+
+
+
+
+
+

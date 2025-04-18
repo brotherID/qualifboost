@@ -1,0 +1,23 @@
+<div class="container">
+  <h2>Créer un Permission</h2>
+  <form [formGroup]="permissionForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill">
+      <mat-label>ID du Permission</mat-label>
+      <input matInput formControlName="id" required readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Nom du Permission</mat-label>
+      <input matInput formControlName="permission" required>
+    </mat-form-field>
+
+
+    <div class="actions">
+      <button mat-raised-button color="primary" type="submit" [disabled]="!permissionForm.valid">
+        Créer
+      </button>
+      <button mat-button type="button" routerLink="/management-permissions">Annuler</button>
+    </div>
+  </form>
+</div>
+

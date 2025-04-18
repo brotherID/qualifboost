@@ -1,0 +1,41 @@
+<div class="container">
+  <h2>Créer un Rôle</h2>
+  <form [formGroup]="roleForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill">
+      <mat-label>ID du Rôle</mat-label>
+      <input matInput formControlName="id" required readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Nom du Rôle</mat-label>
+      <input matInput formControlName="role" required>
+    </mat-form-field>
+
+    <mat-checkbox formControlName="isAdmin">Admin</mat-checkbox>
+    <mat-checkbox formControlName="isSuperAdmin">Super Admin</mat-checkbox>
+
+    <div formArrayName="permissionList" class="permission-list">
+      <h3>Permissions</h3>
+      <div *ngFor="let permission of permissionList.controls; let i = index" [formGroupName]="i">
+        <mat-form-field appearance="fill">
+          <mat-label>Permission {{ i + 1 }}</mat-label>
+          <input matInput formControlName="value">
+        </mat-form-field>
+        <button mat-icon-button color="warn" (click)="removePermission(i)" type="button">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+
+      <button mat-stroked-button type="button" color="primary" (click)="addPermission()">
+        <mat-icon>add</mat-icon> Ajouter une permission
+      </button>
+    </div>
+
+    <div class="actions">
+      <button mat-raised-button color="primary" type="submit" [disabled]="!roleForm.valid">
+        Créer
+      </button>
+      <button mat-button type="button" routerLink="/management-roles">Annuler</button>
+    </div>
+  </form>
+</div>

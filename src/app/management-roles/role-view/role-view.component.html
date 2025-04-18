@@ -1,0 +1,25 @@
+<div class="role-details" *ngIf="role ">
+  <h2>Détails du rôle</h2>
+
+  <mat-card>
+    <mat-card-title>{{ role.role }}</mat-card-title>
+
+    <mat-card-content>
+      <p><strong>Admin :</strong> {{ role.isAdmin ? 'Oui' : 'Non' }}</p>
+      <p><strong>Super Admin :</strong> {{ role.isSuperAdmin ? 'Oui' : 'Non' }}</p>
+
+      <div>
+        <p><strong>Permissions :</strong>
+          <mat-chip *ngFor="let p of role.permissionList" color="primary" selected>
+            {{ p }}
+          </mat-chip>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <div style="margin-top: 16px;">
+    <button mat-button color="warn" (click)="cancel()">Annuler</button>
+  </div>
+
+</div>
+
+

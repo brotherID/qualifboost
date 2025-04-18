@@ -1,0 +1,51 @@
+<div class="container">
+  <h2>
+    <mat-icon>edit</mat-icon>
+    Modifier un rôle
+  </h2>
+
+  <form [formGroup]="roleForm" (ngSubmit)="onSubmit()">
+    <!-- Nom du rôle -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nom du rôle</mat-label>
+      <input matInput formControlName="role" placeholder="">
+    </mat-form-field>
+
+    <!-- Admin -->
+    <mat-checkbox formControlName="isAdmin">Admin</mat-checkbox>
+
+    <!-- Super Admin -->
+    <mat-checkbox formControlName="isSuperAdmin">Super Admin</mat-checkbox>
+
+    <!-- Permissions -->
+    <div formArrayName="permissionList" class="permissions-container">
+      <h3>Permissions</h3>
+
+      <div class="permissions-grid">
+        <div *ngFor="let permission of permissionList.controls; let i = index" class="permission-item">
+          <mat-form-field appearance="fill" class="permission-field">
+            <mat-label>Permission {{ i + 1 }}</mat-label>
+            <input matInput [formControlName]="i" />
+          </mat-form-field>
+
+          <button mat-icon-button color="warn" (click)="removePermission(i,permission.value)" type="button" matTooltip="Supprimer">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <button mat-stroked-button color="primary" type="button" (click)="addPermission()">
+        <mat-icon>add</mat-icon> Ajouter une permission
+      </button>
+    </div>
+
+
+    <!-- Bouton de soumission -->
+    <div class="actions">
+      <button mat-raised-button color="primary" type="submit" [disabled]="roleForm.invalid">
+        Modifier
+      </button>
+    </div>
+  </form>
+</div>
+

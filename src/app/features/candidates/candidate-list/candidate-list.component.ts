@@ -52,7 +52,7 @@ import { Candidate } from '../../../core/models/candidate.model';
           Nouveau Candidat
         </button>
       </div>
-      
+
       <div class="card-container">
         <div class="filters-row">
           <mat-form-field appearance="outline" class="search-field">
@@ -60,7 +60,7 @@ import { Candidate } from '../../../core/models/candidate.model';
             <input matInput [(ngModel)]="searchText" placeholder="Nom, technologie..." (keyup)="applyFilter()">
             <mat-icon matSuffix>search</mat-icon>
           </mat-form-field>
-          
+
           <div class="filter-actions">
             <mat-form-field appearance="outline">
               <mat-label>Technologie</mat-label>
@@ -69,7 +69,7 @@ import { Candidate } from '../../../core/models/candidate.model';
                 <mat-option *ngFor="let tech of technologies" [value]="tech">{{tech}}</mat-option>
               </mat-select>
             </mat-form-field>
-            
+
             <mat-form-field appearance="outline">
               <mat-label>Statut</mat-label>
               <mat-select [(ngModel)]="selectedStatus" (selectionChange)="applyFilter()">
@@ -78,13 +78,13 @@ import { Candidate } from '../../../core/models/candidate.model';
                 <mat-option value="En mission">En mission</mat-option>
               </mat-select>
             </mat-form-field>
-            
+
             <button mat-stroked-button color="primary" (click)="resetFilters()" matTooltip="Réinitialiser les filtres" *ngIf="isFiltered">
               <mat-icon>filter_alt_off</mat-icon>
             </button>
           </div>
         </div>
-        
+
         <div class="results-info" *ngIf="filteredCandidates.length !== candidates.length">
           <span>{{filteredCandidates.length}} sur {{candidates.length}} candidats affichés</span>
         </div>
@@ -146,7 +146,7 @@ import { Candidate } from '../../../core/models/candidate.model';
             <!-- Table Setup -->
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            
+
             <!-- No Data Row -->
             <tr class="mat-row no-data-row" *matNoDataRow>
               <td class="mat-cell" colspan="5">
@@ -161,8 +161,8 @@ import { Candidate } from '../../../core/models/candidate.model';
             </tr>
           </table>
         </div>
-        
-        <mat-paginator 
+
+        <mat-paginator
           [length]="filteredCandidates.length"
           [pageSize]="10"
           [pageSizeOptions]="[5, 10, 25, 100]"
@@ -179,48 +179,48 @@ import { Candidate } from '../../../core/models/candidate.model';
       margin-bottom: 20px;
       align-items: center;
     }
-    
+
     .search-field {
       flex: 1;
       min-width: 250px;
     }
-    
+
     .filter-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 16px;
       align-items: center;
     }
-    
+
     .filter-actions mat-form-field {
       width: 180px;
       margin-bottom: 0;
     }
-    
+
     .results-info {
       margin-bottom: 16px;
       font-size: 14px;
       color: rgba(0, 0, 0, 0.6);
     }
-    
+
     .candidate-name {
       display: flex;
       flex-direction: column;
     }
-    
+
     .name {
       font-weight: 500;
     }
-    
+
     .action-buttons {
       display: flex;
       gap: 8px;
     }
-    
+
     .no-data-row {
       height: 200px;
     }
-    
+
     .no-data-message {
       display: flex;
       flex-direction: column;
@@ -229,7 +229,7 @@ import { Candidate } from '../../../core/models/candidate.model';
       padding: 40px 0;
       color: rgba(0, 0, 0, 0.5);
     }
-    
+
     .no-data-message mat-icon {
       font-size: 48px;
       width: 48px;
@@ -237,22 +237,22 @@ import { Candidate } from '../../../core/models/candidate.model';
       margin-bottom: 16px;
       color: rgba(0, 0, 0, 0.2);
     }
-    
+
     .no-data-message p {
       margin-bottom: 16px;
     }
-    
+
     @media (max-width: 768px) {
       .filters-row {
         flex-direction: column;
         align-items: stretch;
       }
-      
+
       .filter-actions {
         flex-direction: column;
         align-items: stretch;
       }
-      
+
       .filter-actions mat-form-field {
         width: 100%;
       }
@@ -264,18 +264,18 @@ export class CandidateListComponent implements OnInit {
   filteredCandidates: Candidate[] = [];
   displayedColumns: string[] = ['name', 'grade', 'mainTechnology', 'status', 'actions'];
   isRC = false;
-  
+
   // Filtres
   searchText = '';
   selectedTechnology = '';
   selectedStatus = '';
   technologies: string[] = ['Java', 'JavaScript', 'Python', '.NET', 'SQL'];
-  
+
   constructor(private mockDataService: MockDataService) {}
 
   ngOnInit() {
     this.loadCandidates();
-    
+
     this.mockDataService.getCurrentUser().subscribe(
       user => this.isRC = user.role === 'RC'
     );
@@ -289,33 +289,33 @@ export class CandidateListComponent implements OnInit {
       }
     );
   }
-  
+
   applyFilter() {
     this.filteredCandidates = this.candidates.filter(candidate => {
-      const nameMatch = 
-        this.searchText === '' || 
+      const nameMatch =
+        this.searchText === '' ||
         `${candidate.firstName} ${candidate.lastName}`.toLowerCase().includes(this.searchText.toLowerCase()) ||
         candidate.mainTechnology.toLowerCase().includes(this.searchText.toLowerCase());
-      
-      const techMatch = 
-        this.selectedTechnology === '' || 
+
+      const techMatch =
+        this.selectedTechnology === '' ||
         candidate.mainTechnology === this.selectedTechnology;
-      
-      const statusMatch = 
-        this.selectedStatus === '' || 
+
+      const statusMatch =
+        this.selectedStatus === '' ||
         candidate.status === this.selectedStatus;
-      
+
       return nameMatch && techMatch && statusMatch;
     });
   }
-  
+
   resetFilters() {
     this.searchText = '';
     this.selectedTechnology = '';
     this.selectedStatus = '';
     this.filteredCandidates = [...this.candidates];
   }
-  
+
   get isFiltered(): boolean {
     return this.searchText !== '' || this.selectedTechnology !== '' || this.selectedStatus !== '';
   }
