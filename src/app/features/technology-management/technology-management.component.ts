@@ -10,11 +10,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
 
 import { TechnologyService } from '../../core/services/technology.service';
 import { Technology, Subcategory, TechnologyCategory } from '../../core/models/technology.model';
-import { UserRole } from '../../core/models/user.model';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
@@ -69,7 +67,7 @@ export class TechnologyManagementComponent implements OnInit {
   }
 
   checkUserRole(): void {
-    this.isRT = this.authService.getCurrentUserRole() === 'RT';
+    this.isRT =  false;
   }
 
   loadCategories(): void {

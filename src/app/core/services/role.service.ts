@@ -43,5 +43,10 @@ export class RoleService {
     return this.http.post(`${this.apiUrl}/${roleId}/permissions/${permission}`, {});
   }
 
+  getCurrentRole(): Observable<string> {
+    return this.http.get(`${this.apiUrl}/current`, { responseType: 'text' });
+  }
+
+
 
 }

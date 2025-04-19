@@ -5,19 +5,19 @@
   </h2>
 
   <form [formGroup]="roleForm" (ngSubmit)="onSubmit()">
-    <!-- Nom du rôle -->
+
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Nom du rôle</mat-label>
       <input matInput formControlName="role" placeholder="">
     </mat-form-field>
 
-    <!-- Admin -->
+
     <mat-checkbox formControlName="isAdmin">Admin</mat-checkbox>
 
-    <!-- Super Admin -->
+
     <mat-checkbox formControlName="isSuperAdmin">Super Admin</mat-checkbox>
 
-    <!-- Permissions -->
+
     <div formArrayName="permissionList" class="permissions-container">
       <h3>Permissions</h3>
 
@@ -40,7 +40,6 @@
     </div>
 
 
-    <!-- Bouton de soumission -->
     <div class="actions">
       <button mat-raised-button color="primary" type="submit" [disabled]="roleForm.invalid">
         Modifier

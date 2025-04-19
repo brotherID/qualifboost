@@ -11,42 +11,15 @@
     </div>
 
     <div class="toolbar-right">
-      <button mat-icon-button matTooltip="Settings">
+      <button [matMenuTriggerFor]="menu" mat-icon-button matTooltip="Settings">
         <mat-icon>settings</mat-icon>
       </button>
-
-      <div class="role-selector">
-        <mat-form-field appearance="outline">
-          <mat-select  panelClass="role-select-panel">
-            <mat-select-trigger>
-              <div class="role-display">
-                <mat-icon >person</mat-icon>
-                <mat-icon >code</mat-icon>
-                <mat-icon >business</mat-icon>
-                <span>getRoleLabel(currentRole)</span>
-              </div>
-            </mat-select-trigger>
-            <mat-option >
-              <div class="role-option">
-                <mat-icon>person</mat-icon>
-                <span>Recruteur Consultant</span>
-              </div>
-            </mat-option>
-            <mat-option >
-              <div class="role-option">
-                <mat-icon>code</mat-icon>
-                <span>Recruteur Technique</span>
-              </div>
-            </mat-option>
-            <mat-option >
-              <div class="role-option">
-                <mat-icon>business</mat-icon>
-                <span>Chef de Projet</span>
-              </div>
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Déconnexion</span>
+        </button>
+      </mat-menu>
     </div>
   </mat-toolbar>
 
@@ -58,8 +31,7 @@
             <mat-icon>account_circle</mat-icon>
           </div>
           <div class="user-info">
-            <h3>currentRole</h3>
-            <p>getRoleLabel(currentRole)</p>
+            <h3>{{ currentRole }}</h3>
           </div>
         </div>
       </div>

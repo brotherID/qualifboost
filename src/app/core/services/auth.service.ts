@@ -7,7 +7,7 @@ import {Observable} from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  private tokenUrl = 'http://localhost:8080/realms/bdcc_realm/protocol/openid-connect/token';
+  private tokenUrl = 'http://localhost:8089/realms/bdcc_realm/protocol/openid-connect/token';
 
   constructor(private http: HttpClient) { }
 
@@ -15,7 +15,7 @@ export class AuthService {
     const body = new HttpParams()
       .set('grant_type', 'password')
       .set('client_id', 'gesproPlus_client-ang')
-      .set('client_secret', 'C96veAe4P35XiVmrxzLryAbAdjZVD7Jx')
+      .set('client_secret', '2nCGkl4ajccclk38whlAf5CUMkITdNyN')
       .set('username', username)
       .set('password', password);
 
@@ -27,35 +27,6 @@ export class AuthService {
   }
 
 
-  private currentUser: User = {
-    id: 1,
-    name: 'Responsable Technique',
-    role: 'RT'
-  };
 
 
-  getCurrentUser(): User {
-    return this.currentUser;
-  }
-
-
-  getCurrentUserRole(): UserRole {
-    return this.currentUser.role;
-  }
-
-  setCurrentUserRole(role: UserRole): void {
-    this.currentUser.role = role;
-  }
-
-  isRT(): boolean {
-    return this.currentUser.role === 'RT';
-  }
-
-  isRC(): boolean {
-    return this.currentUser.role === 'RC';
-  }
-
-  isCP(): boolean {
-    return this.currentUser.role === 'CP';
-  }
 }
