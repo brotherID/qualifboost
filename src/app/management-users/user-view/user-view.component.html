@@ -1,0 +1,64 @@
+<div class="users-details" *ngIf="user" >
+  <mat-card class="user-details-card">
+    <mat-card-title>
+      <mat-icon>person</mat-icon>
+      Détails de l'utilisateur
+    </mat-card-title>
+
+    <mat-card-content>
+      <table class="user-details-table">
+        <tr>
+          <th>Nom d'utilisateur :</th>
+          <td>{{ user.username }}</td>
+        </tr>
+        <tr>
+          <th>Email :</th>
+          <td>{{ user.email }}</td>
+        </tr>
+        <tr>
+          <th>Prénom :</th>
+          <td>{{ user.firstName }}</td>
+        </tr>
+        <tr>
+          <th>Nom :</th>
+          <td>{{ user.lastName }}</td>
+        </tr>
+        <tr>
+          <th>Compte activé :</th>
+          <td>
+            <mat-icon [color]="user.enable ? 'primary' : 'warn'">
+              {{ user.enable ? 'check_circle' : 'cancel' }}
+            </mat-icon>
+          </td>
+        </tr>
+        <tr>
+          <th>Email vérifié :</th>
+          <td>
+            <mat-icon [color]="user.emailVerified ? 'primary' : 'warn'">
+              {{ user.emailVerified ? 'check_circle' : 'cancel' }}
+            </mat-icon>
+          </td>
+        </tr>
+      </table>
+
+      <h3>Rôle(s)</h3>
+      <div *ngIf="user?.roles?.length != 0; else noRoles">
+        <mat-chip *ngFor="let r of roles" color="primary" selected>{{ r }}</mat-chip>
+      </div>
+      <ng-template #noRoles>
+        <p><mat-icon color="warn">warning</mat-icon> Aucun rôle attribué.</p>
+      </ng-template>
+
+      <h3>Permission(s)</h3>
+      <div *ngIf="user.roles?.length != 0; else noPermissions">
+        <mat-chip *ngFor="let p of permissions" color="accent" selected>{{ p.permission }}</mat-chip>
+      </div>
+     <ng-template #noPermissions>
+       <p><mat-icon color="warn">lock</mat-icon> Aucune permission attribuée.</p>
+     </ng-template>
+    </mat-card-content>
+    <div style=" text-align: right;">
+      <button  mat-raised-button color="accent" (click)="cancel()">Annuler</button>
+    </div>
+  </mat-card>
+</div>

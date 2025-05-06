@@ -5,7 +5,7 @@ import {MatFormField, MatInput, MatLabel} from '@angular/material/input';
 import {MatCheckbox} from '@angular/material/checkbox';
 import {NgForOf} from '@angular/common';
 import {MatButton, MatIconButton} from '@angular/material/button';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {RoleService} from '../../core/services/role.service';
 import {MatTooltip} from '@angular/material/tooltip';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
@@ -28,7 +28,8 @@ import {Role} from '../../core/models/role';
     MatButton,
     MatTooltip,
     MatDialogModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    RouterLink
   ],
   templateUrl: './role-edit.component.html',
   styleUrl: './role-edit.component.scss',
@@ -38,7 +39,7 @@ export class RoleEditComponent  {
   roleForm: FormGroup;
   constructor(private fb: FormBuilder, private route: ActivatedRoute, private roleService: RoleService , private dialog: MatDialog, private snackBar: MatSnackBar,private router: Router) {
     this.roleForm = this.fb.group({
-      id: [''],role: [''], isAdmin: [false], isSuperAdmin: [false], permissionList: this.fb.array([])
+      role: [''], isAdmin: [false], isSuperAdmin: [false], permissionsDto: this.fb.array([])
     });
 
     const state = this.router.getCurrentNavigation()?.extras.state as { roleData: Role };
@@ -59,15 +60,14 @@ export class RoleEditComponent  {
 
   private loadForm(role: Role) {
     this.roleForm.patchValue({
-      id: role.id,
       role: role.role,
       isAdmin: role.isAdmin,
       isSuperAdmin: role.isSuperAdmin
     });
 
     const permissionsArray = this.fb.array([]);
-    role.permissionList.forEach(p => permissionsArray.push(this.fb.control(p)));
-    this.roleForm.setControl('permissionList', permissionsArray);
+    role.permissionsDto.forEach(p => permissionsArray.push(this.fb.control(p)));
+    this.roleForm.setControl('permissionsDto', permissionsArray);
   }
 
 
@@ -75,7 +75,7 @@ export class RoleEditComponent  {
 
 
   onSubmit() {
-    console.log("data ** :",this.roleForm.value);
+    console.log("data request :",this.roleForm.value);
     this.roleService.updateRole(this.roleForm.value).subscribe({
       next: () => {
         this.showSnackbar(`Rôle mis à jour avec succès`);
@@ -89,12 +89,12 @@ export class RoleEditComponent  {
     });
   }
 
-  get permissionList(): FormArray {
-    return this.roleForm.get('permissionList') as FormArray;
+  get permissionsDto(): FormArray {
+    return this.roleForm.get('permissionsDto') as FormArray;
   }
 
   addPermission() {
-    this.permissionList.push(this.fb.control(''));
+    this.permissionsDto.push(this.fb.control(''));
   }
 
   showSnackbar(message: string, type: 'success' | 'error' = 'success') {
@@ -120,7 +120,7 @@ export class RoleEditComponent  {
         console.log("roleId : ",roleId);
         console.log("index :",index);
         console.log("permission :",permission);
-        this.permissionList.removeAt(index);
+        this.permissionsDto.removeAt(index);
         this.showSnackbar(`Permission "${permission}" supprimée avec succès`);
         // this.roleService.deletePermissionFromRole(roleId, permission).subscribe({
         //   next: () => {

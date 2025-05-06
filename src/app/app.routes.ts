@@ -26,11 +26,13 @@ import {RoleAddComponent} from './management-roles/role-add/role-add.component';
 import {ManagementPermissionsComponent} from './management-permissions/management-permissions.component';
 import {PermissionEditComponent} from './management-permissions/permission-edit/permission-edit.component';
 import {PermissionAddComponent} from './management-permissions/permission-add/permission-add.component';
+import {ManagementUsersComponent} from './management-users/management-users.component';
+import {UserViewComponent} from './management-users/user-view/user-view.component';
+import {UserAddComponent} from './management-users/user-add/user-add.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'candidates', pathMatch: 'full' },
-  { path: '',
-  component: MainLayoutComponent,
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', component: MainLayoutComponent,
   children: [
       { path: 'candidates', component: CandidateListComponent},
       { path: 'candidates/new', component: CandidateFormComponent },
@@ -63,7 +65,11 @@ export const routes: Routes = [
       { path: 'roles/add', component: RoleAddComponent },
       { path: 'management-permissions', component:  ManagementPermissionsComponent},
       { path: 'permissions/edit/:id', component:  PermissionEditComponent},
-      { path: 'permissions/add', component:  PermissionAddComponent}
+      { path: 'permissions/add', component:  PermissionAddComponent},
+      { path: 'management-users', component:  ManagementUsersComponent},
+      { path: 'users/view/:id', component:  UserViewComponent},
+      { path: 'users/add', component:  UserAddComponent}
+
   ]
   },
   { path: '', component: AuthLayoutComponent,

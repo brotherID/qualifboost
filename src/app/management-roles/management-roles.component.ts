@@ -86,7 +86,7 @@ export class ManagementRolesComponent implements OnInit,  AfterViewInit{
   }
 
   editRole(role: Role) {
-    this.router.navigate(['/roles/edit', role.id], {
+    this.router.navigate(['/roles/edit', role.role], {
       state: { roleData: role }
     });
   }
@@ -107,15 +107,15 @@ export class ManagementRolesComponent implements OnInit,  AfterViewInit{
   deleteRole(role: Role) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
-        message: `Voulez-vous vraiment supprimer ce role "${role.id}" ?`
+        message: `Voulez-vous vraiment supprimer ce role "${role.role}" ?`
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.roleService.deleteRole(role.id).subscribe({
+        this.roleService.deleteRole(role.role).subscribe({
           next: () => {
-            this.showSnackbar(` Rôle "${role.id}" supprimé avec succès`);
+            this.showSnackbar(` Rôle "${role.role}" supprimé avec succès`);
             this.loadRoles();
           },
           error: err => {

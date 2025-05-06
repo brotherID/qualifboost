@@ -28,13 +28,7 @@ export class PermissionAddComponent {
   constructor(private formBuilder: FormBuilder, private router: Router,private permissionService: PermissionService
     , private snackBar: MatSnackBar) {
     this.permissionForm = this.formBuilder.group({
-      id: ['', Validators.required],
       permission: ['', Validators.required]
-    });
-    this.permissionForm.get('permission')?.valueChanges.subscribe(value => {
-      if (value) {
-        this.permissionForm.get('id')?.setValue(value, { emitEvent: false });
-      }
     });
 
   }
@@ -52,15 +46,8 @@ export class PermissionAddComponent {
 
   onSubmit(): void {
     const formValue = this.permissionForm.value;
-
-    const payload = {
-      id: formValue.id,
-      permission: formValue.permission
-    };
-
-    console.log('Payload à envoyer :', payload);
-
-    this.permissionService.addPermission(payload).subscribe({
+    console.log("formValue :",formValue);
+    this.permissionService.addPermission(formValue).subscribe({
       next: (res) => {
         console.log('Permission ajoutée avec succès !', res);
         this.showSnackbar('Permission créé avec succès');

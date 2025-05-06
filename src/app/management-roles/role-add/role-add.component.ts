@@ -36,18 +36,11 @@ export class RoleAddComponent {
   constructor(private formBuilder: FormBuilder, private router: Router,private roleService: RoleService
   , private snackBar: MatSnackBar) {
     this.roleForm = this.formBuilder.group({
-      id: ['', Validators.required],
       role: ['', Validators.required],
       isAdmin: [false],
       isSuperAdmin: [false],
       permissionList: this.formBuilder.array([])
     });
-    this.roleForm.get('role')?.valueChanges.subscribe(value => {
-      if (value) {
-        this.roleForm.get('id')?.setValue(value, { emitEvent: false });
-      }
-    });
-
   }
 
   get permissionList(): FormArray {
@@ -76,11 +69,10 @@ export class RoleAddComponent {
     const formValue = this.roleForm.value;
 
     const payload = {
-      id: formValue.id,
       role: formValue.role,
       isAdmin: formValue.isAdmin,
       isSuperAdmin: formValue.isSuperAdmin,
-      permissionList: formValue.permissionList.map((p: any) => p.value)
+      permissionsDto: formValue.permissionList.map((p: any) => p.value)
     };
 
     console.log('Payload à envoyer :', payload);

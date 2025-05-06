@@ -3,17 +3,20 @@ import {
   MatCell,
   MatCellDef,
   MatColumnDef,
-  MatHeaderCell, MatHeaderCellDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
   MatHeaderRow,
   MatHeaderRowDef,
-  MatRow, MatRowDef, MatTable, MatTableDataSource
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
 } from "@angular/material/table";
 import {NgIf} from "@angular/common";
 import {Router, RouterLink} from "@angular/router";
 import {MatIcon} from '@angular/material/icon';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatTooltip} from '@angular/material/tooltip';
-import {Role} from '../core/models/role';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
@@ -79,10 +82,9 @@ export class ManagementPermissionsComponent  implements OnInit,  AfterViewInit{
     });
   }
 
-  editPermission(permission: Permission) {
-    this.router.navigate(['/permissions/edit', permission.id], {
-      state: { permissionData: permission }
-    });
+  editPermission(idPermission: string) {
+    console.log("idPermission : ",idPermission);
+    this.router.navigate(['/permissions/edit', idPermission]);
   }
 
   ngOnInit(): void {
@@ -98,18 +100,19 @@ export class ManagementPermissionsComponent  implements OnInit,  AfterViewInit{
     });
   }
 
-  deletePermission(permission: Permission) {
+  deletePermission(idPermission: string) {
+    console.log("idPermission : ",idPermission);
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
-        message: `Voulez-vous vraiment supprimer cette  permission "${permission.id}" ?`
+        message: `Voulez-vous vraiment supprimer cette  permission "${idPermission}" ?`
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.permissionService.deletePermission(permission.id).subscribe({
+        this.permissionService.deletePermission(idPermission).subscribe({
           next: () => {
-            this.showSnackbar(` Permission "${permission.id}" supprimé avec succès`);
+            this.showSnackbar(` Permission "${idPermission}" supprimé avec succès`);
             this.loadPermissions();
           },
           error: err => {

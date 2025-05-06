@@ -47,7 +47,6 @@ export class RoleViewComponent implements OnInit {
      }
   }
 
-
   cancel() {
     this.router.navigate(['/management-roles']);
   }

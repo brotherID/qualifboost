@@ -42,7 +42,7 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Actions</th>
         <td mat-cell *matCellDef="let role">
-          <button mat-icon-button color="primary" [routerLink]="['/roles/view/', role.id]"  matTooltip="Voir">
+          <button mat-icon-button color="primary" [routerLink]="['/roles/view/', role.role]"  matTooltip="Voir">
             <mat-icon>visibility</mat-icon>
           </button>
           <button mat-icon-button color="accent" (click)="editRole(role)" matTooltip="Modifier">

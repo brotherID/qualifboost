@@ -18,11 +18,11 @@
     <mat-checkbox formControlName="isSuperAdmin">Super Admin</mat-checkbox>
 
 
-    <div formArrayName="permissionList" class="permissions-container">
+    <div formArrayName="permissionsDto" class="permissions-container">
       <h3>Permissions</h3>
 
       <div class="permissions-grid">
-        <div *ngFor="let permission of permissionList.controls; let i = index" class="permission-item">
+        <div *ngFor="let permission of permissionsDto.controls; let i = index" class="permission-item">
           <mat-form-field appearance="fill" class="permission-field">
             <mat-label>Permission {{ i + 1 }}</mat-label>
             <input matInput [formControlName]="i" />
@@ -44,6 +44,7 @@
       <button mat-raised-button color="primary" type="submit" [disabled]="roleForm.invalid">
         Modifier
       </button>
+      <button mat-button type="button" routerLink="/management-roles">Annuler</button>
     </div>
   </form>
 </div>

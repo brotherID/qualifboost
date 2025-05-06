@@ -1,10 +1,6 @@
 <div class="container">
   <h2>Créer un Rôle</h2>
   <form [formGroup]="roleForm" (ngSubmit)="onSubmit()">
-    <mat-form-field appearance="fill">
-      <mat-label>ID du Rôle</mat-label>
-      <input matInput formControlName="id" required readonly>
-    </mat-form-field>
 
     <mat-form-field appearance="fill">
       <mat-label>Nom du Rôle</mat-label>
